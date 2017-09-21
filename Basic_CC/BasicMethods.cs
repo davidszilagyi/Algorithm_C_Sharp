@@ -194,16 +194,26 @@ namespace Basic_CC
 
         public object[] Destroyer(object[] arr, params object[] ignored)
         {
-            object[] result = new object[0];
-            foreach (object item in arr)
+            for (int i = 0; i < arr.Length; i++)
             {
-                if (!ignored.Contains<object>(item))
+                if (ignored.Contains<object>(arr[i]))
                 {
-                    Array.Resize<object>(ref result, result.Length + 1);
-                    result[result.Length - 1] = item;
+                    for (int k = i; k < arr.Length; k++)
+                    {
+                        if (arr.Length == k + 1)
+                        {
+                            break;
+                        }
+                        arr[k] = arr[k + 1];
+                    }
+                    Array.Resize<object>(ref arr, arr.Length - 1);
                 }
             }
-            return result;
+            if (arr.Intersect(ignored).Any())
+            {
+                arr = Destroyer(arr, ignored);
+            }
+            return arr;
         }
 
         public int GetIndexToIns(int[] arr, double num)
@@ -257,7 +267,7 @@ namespace Basic_CC
                             break;
                         }
                     }
-                    else if(i == alphabets.Length - 1)
+                    else if (i == alphabets.Length - 1)
                     {
                         result += character;
                     }
